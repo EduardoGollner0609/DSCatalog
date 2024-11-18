@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.eduardo.dscatalog.dto.CategoryDTO;
 import com.eduardo.dscatalog.entities.Category;
 import com.eduardo.dscatalog.repositories.CategoryRepository;
+import com.eduardo.dscatalog.services.exceptions.DatabaseException;
+import com.eduardo.dscatalog.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -58,7 +60,7 @@ public class CategoryService {
 		try {
 			repository.deleteById(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new RuntimeException("Referential integrity failure");
+			throw new DatabaseException("Referential integrity failure");
 		}
 	}
 }
