@@ -10,6 +10,8 @@ import com.eduardo.dscatalog.dto.CategoryDTO;
 import com.eduardo.dscatalog.entities.Category;
 import com.eduardo.dscatalog.repositories.CategoryRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class CategoryService {
 
@@ -33,5 +35,16 @@ public class CategoryService {
 		Category category = new Category();
 		category.setName(categoryDTO.getName());
 		return new CategoryDTO(repository.save(category));
+	}
+
+	@Transactional
+	public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
+		try {
+			Category category = repository.getReferenceById(id);
+			category.setName(categoryDTO.getName());
+			return new CategoryDTO(repository.save(category));
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id Not Found " + id);
+		}
 	}
 }
