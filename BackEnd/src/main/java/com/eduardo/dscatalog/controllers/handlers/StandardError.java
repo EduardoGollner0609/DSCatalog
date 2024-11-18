@@ -1,4 +1,4 @@
-package com.eduardo.dscatalog.controllers;
+package com.eduardo.dscatalog.controllers.handlers;
 
 import java.io.Serializable;
 import java.time.Instant;
