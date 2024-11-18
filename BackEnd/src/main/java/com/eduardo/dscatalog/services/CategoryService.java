@@ -1,8 +1,8 @@
 package com.eduardo.dscatalog.services;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.eduardo.dscatalog.dto.CategoryDTO;
@@ -14,7 +14,7 @@ public class CategoryService {
 	@Autowired
 	private CategoryRepository repository;
 
-	public List<CategoryDTO> findAll() {
-		return repository.findAll().stream().map(category -> new CategoryDTO(category)).toList();
+	public Page<CategoryDTO> findAllPaged(Pageable pageable) {
+		return repository.findAll(pageable).map(category -> new CategoryDTO(category));
 	}
 }
