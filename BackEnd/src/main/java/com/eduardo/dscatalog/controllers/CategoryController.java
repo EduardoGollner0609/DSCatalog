@@ -1,4 +1,4 @@
-package com.eduardo.dscatalog.services;
+package com.eduardo.dscatalog.controllers;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eduardo.dscatalog.dto.CategoryDTO;
+import com.eduardo.dscatalog.services.CategoryService;
 
 @RestController
 @RequestMapping(value = "/categories")
