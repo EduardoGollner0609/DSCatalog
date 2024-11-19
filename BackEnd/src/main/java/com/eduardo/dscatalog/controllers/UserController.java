@@ -19,6 +19,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.eduardo.dscatalog.dto.UserDTO;
 import com.eduardo.dscatalog.services.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
@@ -37,7 +39,7 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDTO> insert(@RequestBody UserDTO userDTO) {
+	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserDTO userDTO) {
 		userDTO = service.insert(userDTO);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userDTO.getId())
 				.toUri();
@@ -45,7 +47,7 @@ public class UserController {
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+	public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO) {
 		return ResponseEntity.ok(service.update(id, userDTO));
 	}
 
