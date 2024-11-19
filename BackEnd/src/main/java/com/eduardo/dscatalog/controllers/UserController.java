@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.eduardo.dscatalog.dto.UserDTO;
+import com.eduardo.dscatalog.dto.UserInsertDTO;
 import com.eduardo.dscatalog.services.UserService;
 
 import jakarta.validation.Valid;
@@ -39,11 +40,11 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserDTO userDTO) {
-		userDTO = service.insert(userDTO);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(userDTO.getId())
+	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO userDTO) {
+		UserDTO newDTO = service.insert(userDTO);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newDTO.getId())
 				.toUri();
-		return ResponseEntity.created(uri).body(userDTO);
+		return ResponseEntity.created(uri).body(newDTO);
 	}
 
 	@PutMapping(value = "/{id}")

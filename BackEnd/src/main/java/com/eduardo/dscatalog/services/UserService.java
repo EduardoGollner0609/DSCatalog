@@ -4,12 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eduardo.dscatalog.dto.RoleDTO;
 import com.eduardo.dscatalog.dto.UserDTO;
+import com.eduardo.dscatalog.dto.UserInsertDTO;
+import com.eduardo.dscatalog.entities.Role;
 import com.eduardo.dscatalog.entities.User;
+import com.eduardo.dscatalog.repositories.RoleRepository;
 import com.eduardo.dscatalog.repositories.UserRepository;
 import com.eduardo.dscatalog.services.exceptions.DatabaseException;
 import com.eduardo.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -20,7 +25,13 @@ import jakarta.persistence.EntityNotFoundException;
 public class UserService {
 
 	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
 	private UserRepository repository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@Transactional(readOnly = true)
 	public Page<UserDTO> findAllPaged(Pageable pageable) {
@@ -34,9 +45,10 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserDTO insert(UserDTO UserDTO) {
+	public UserDTO insert(UserInsertDTO userDTO) {
 		User user = new User();
-		copyDtoToEntity(user, UserDTO);
+		copyDtoToEntity(user, userDTO);
+		user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		return new UserDTO(repository.save(user));
 	}
 
@@ -67,6 +79,11 @@ public class UserService {
 		user.setFirstName(userDTO.getFirstName());
 		user.setLastName(userDTO.getLastName());
 		user.setEmail(userDTO.getEmail());
-		user.setPassword(userDTO.getPassword());
+
+		user.getRoles().clear();
+		for (RoleDTO roleDTO : userDTO.getRoles()) {
+			Role role = roleRepository.getReferenceById(roleDTO.getId());
+			user.getRoles().add(role);
+		}
 	}
 }
