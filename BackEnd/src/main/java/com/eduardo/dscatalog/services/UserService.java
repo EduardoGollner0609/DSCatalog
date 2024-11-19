@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +32,7 @@ import jakarta.persistence.EntityNotFoundException;
 public class UserService implements UserDetailsService {
 
 	@Autowired
-	private BCryptPasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Autowired
 	private UserRepository repository;
@@ -99,12 +99,12 @@ public class UserService implements UserDetailsService {
 
 		List<UserDetailsProjection> result = repository.searchUserAndRolesByEmail(username);
 
-		if (result.isEmpty()) {
-			throw new UsernameNotFoundException("User not found");
+		if (result.size() == 0) {
+			throw new UsernameNotFoundException("Email not found");
 		}
 
 		User user = new User();
-		user.setEmail(username);
+		user.setEmail(result.get(0).getUsername());
 		user.setPassword(result.get(0).getPassword());
 
 		for (UserDetailsProjection projection : result) {
