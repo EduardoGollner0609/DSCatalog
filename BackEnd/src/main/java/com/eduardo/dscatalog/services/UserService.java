@@ -11,6 +11,8 @@ import com.eduardo.dscatalog.entities.User;
 import com.eduardo.dscatalog.repositories.UserRepository;
 import com.eduardo.dscatalog.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class UserService {
 
@@ -33,6 +35,17 @@ public class UserService {
 		User user = new User();
 		copyDtoToEntity(user, UserDTO);
 		return new UserDTO(repository.save(user));
+	}
+
+	@Transactional
+	public UserDTO update(Long id, UserDTO userDTO) {
+		try {
+			User user = repository.getReferenceById(id);
+			copyDtoToEntity(user, userDTO);
+			return new UserDTO(user);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id Not Found " + id);
+		}
 	}
 
 	private void copyDtoToEntity(User user, UserDTO userDTO) {
