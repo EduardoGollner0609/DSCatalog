@@ -1,5 +1,6 @@
 package com.eduardo.dscatalog.dto;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,7 +9,9 @@ import com.eduardo.dscatalog.entities.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public class UserDTO {
+public class UserDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	@NotBlank(message = "Campo requerido")
