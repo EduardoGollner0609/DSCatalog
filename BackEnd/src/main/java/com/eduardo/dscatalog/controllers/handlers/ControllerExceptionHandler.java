@@ -48,7 +48,7 @@ public class ControllerExceptionHandler {
 		err.setTimestamp(Instant.now());
 		err.setStatus(status.value());
 		err.setError("Validation exception");
-		err.setMessage("Dados inválidos");
+		err.setMessage("Validation Error");
 		err.setPath(request.getRequestURI());
 
 		for (FieldError f : e.getBindingResult().getFieldErrors()) {
