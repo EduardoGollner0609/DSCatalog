@@ -1,5 +1,7 @@
 package com.eduardo.dscatalog.controllers;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.eduardo.dscatalog.dto.CategoryDTO;
 import com.eduardo.dscatalog.services.CategoryService;
@@ -35,7 +38,10 @@ public class CategoryController {
 
 	@PostMapping
 	public ResponseEntity<CategoryDTO> insert(@RequestBody CategoryDTO categoryDTO) {
-		return ResponseEntity.ok(service.insert(categoryDTO));
+		categoryDTO = service.insert(categoryDTO);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoryDTO.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(categoryDTO);
 	}
 
 	@PutMapping(value = "/{id}")
