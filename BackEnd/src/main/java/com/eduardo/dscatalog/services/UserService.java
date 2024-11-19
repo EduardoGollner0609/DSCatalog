@@ -27,4 +27,18 @@ public class UserService {
 		User user = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource Not Found"));
 		return new UserDTO(user);
 	}
+
+	@Transactional
+	public UserDTO insert(UserDTO UserDTO) {
+		User user = new User();
+		copyDtoToEntity(user, UserDTO);
+		return new UserDTO(repository.save(user));
+	}
+
+	private void copyDtoToEntity(User user, UserDTO userDTO) {
+		user.setFirstName(userDTO.getFirstName());
+		user.setLastName(userDTO.getLastName());
+		user.setEmail(userDTO.getEmail());
+		user.setPassword(userDTO.getPassword());
+	}
 }

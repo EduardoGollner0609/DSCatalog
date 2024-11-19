@@ -31,7 +31,7 @@ public class UserDTO {
 		firstName = user.getFirstName();
 		lastName = user.getLastName();
 		email = user.getEmail();
-		password = user.getEmail();
+		password = user.getPassword();
 		user.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
 	}
 
