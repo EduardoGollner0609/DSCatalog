@@ -1,10 +1,9 @@
 package com.eduardo.dscatalog.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +23,8 @@ public class CategoryService {
 	private CategoryRepository repository;
 
 	@Transactional(readOnly = true)
-	public Page<CategoryDTO> findAllPaged(Pageable pageable) {
-		return repository.findAll(pageable).map(category -> new CategoryDTO(category));
+	public List<CategoryDTO> findAll() {
+		return repository.findAll().stream().map(category -> new CategoryDTO(category)).toList();
 	}
 
 	@Transactional(readOnly = true)
