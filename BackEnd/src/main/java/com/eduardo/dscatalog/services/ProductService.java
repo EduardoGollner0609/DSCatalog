@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,14 +39,20 @@ public class ProductService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<ProductProjection> findAllPaged(String categoryId, String name, Pageable paegeable) {
+	public Page<ProductDTO> findAllPaged(String categoryId, String name, Pageable paegeable) {
 		List<Long> categoryIds = Arrays.asList();
 
 		if (!"0".equals(categoryId)) {
 			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
 		}
 
-		return repository.searchProducts(categoryIds, name, paegeable);
+		Page<ProductProjection> page = repository.searchProducts(categoryIds, name, paegeable);
+		List<Long> productIds = page.map(x -> x.getId()).toList();
+		Page<ProductDTO> pageDto = new PageImpl<>(
+				repository.searchProductsWithCategories(productIds).stream()
+						.map(x -> new ProductDTO(x, x.getCategories())).toList(),
+				page.getPageable(), page.getTotalElements());
+		return pageDto;
 	}
 
 	@Transactional(readOnly = true)
