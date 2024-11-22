@@ -1,5 +1,8 @@
 package com.eduardo.dscatalog.services;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -12,6 +15,7 @@ import com.eduardo.dscatalog.dto.CategoryDTO;
 import com.eduardo.dscatalog.dto.ProductDTO;
 import com.eduardo.dscatalog.entities.Category;
 import com.eduardo.dscatalog.entities.Product;
+import com.eduardo.dscatalog.projections.ProductProjection;
 import com.eduardo.dscatalog.repositories.CategoryRepository;
 import com.eduardo.dscatalog.repositories.ProductRepository;
 import com.eduardo.dscatalog.services.exceptions.DatabaseException;
@@ -31,6 +35,17 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAllPaged(Pageable pageable) {
 		return repository.findAll(pageable).map(product -> new ProductDTO(product));
+	}
+
+	@Transactional(readOnly = true)
+	public Page<ProductProjection> findAllPaged(String categoryId, String name, Pageable paegeable) {
+		List<Long> categoryIds = Arrays.asList();
+
+		if (!"0".equals(categoryId)) {
+			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+		}
+
+		return repository.searchProducts(categoryIds, name, paegeable);
 	}
 
 	@Transactional(readOnly = true)

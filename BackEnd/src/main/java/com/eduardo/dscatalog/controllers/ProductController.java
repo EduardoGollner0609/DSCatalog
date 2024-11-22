@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.eduardo.dscatalog.dto.ProductDTO;
+import com.eduardo.dscatalog.projections.ProductProjection;
 import com.eduardo.dscatalog.services.ProductService;
 
 import jakarta.validation.Valid;
@@ -32,6 +34,13 @@ public class ProductController {
 	@GetMapping
 	public ResponseEntity<Page<ProductDTO>> findAllPaged(Pageable pageable) {
 		return ResponseEntity.ok(service.findAllPaged(pageable));
+	}
+
+	@GetMapping
+	public ResponseEntity<Page<ProductProjection>> findAllPaged(
+			@RequestParam(name = "categoriesId", defaultValue = "0") String categoryId,
+			@RequestParam(name = "name", defaultValue = "") String name, Pageable pageable) {
+		return ResponseEntity.ok(service.findAllPaged(categoryId, name, pageable));
 	}
 
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_OPERATOR')")
