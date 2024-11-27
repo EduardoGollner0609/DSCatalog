@@ -5,25 +5,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.eduardo.dscatalog.entities.Product;
-import com.eduardo.dscatalog.projections.ProductProjection;
+import com.eduardo.dscatalog.projections.IdProjection;
 
 public class Utils {
 
-	public static List<Product> replace(List<ProductProjection> ordered, List<Product> unordered) {
+	public static <ID> List<? extends IdProjection<ID>> replace(List<? extends IdProjection<ID>> ordered,
+			List<? extends IdProjection<ID>> unordered) {
 
-		Map<Long, Product> map = new HashMap<>();
+		Map<ID, IdProjection<ID>> map = new HashMap<>();
 
-		for (Product obj : unordered) {
+		for (IdProjection<ID> obj : unordered) {
 			map.put(obj.getId(), obj);
 		}
 
-		List<Product> result = new ArrayList<>();
+		List<IdProjection<ID>> result = new ArrayList<>();
 
-		for (ProductProjection obj : ordered) {
+		for (IdProjection<ID> obj : ordered) {
 			result.add(map.get(obj.getId()));
 		}
-		
+
 		return result;
 	}
 
