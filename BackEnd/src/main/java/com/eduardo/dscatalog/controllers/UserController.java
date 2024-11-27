@@ -37,6 +37,12 @@ public class UserController {
 		return ResponseEntity.ok(service.findAllPaged(pageable));
 	}
 
+	@PreAuthorize("hasAnyRole('ROLE_OPERATOR', 'ROLE_ADMIN')")
+	@GetMapping(value = "/me}")
+	public ResponseEntity<UserDTO> findMe() {
+		return ResponseEntity.ok(service.findMe());
+	}
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
