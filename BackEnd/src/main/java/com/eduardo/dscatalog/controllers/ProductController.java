@@ -31,12 +31,7 @@ public class ProductController {
 	private ProductService service;
 
 	@GetMapping
-	public ResponseEntity<Page<ProductDTO>> findAllPaged(Pageable pageable) {
-		return ResponseEntity.ok(service.findAllPaged(pageable));
-	}
-
-	@GetMapping
-	public ResponseEntity<Page<ProductDTO>> findAllPaged(
+	public ResponseEntity<Page<ProductDTO>> findAllPagedFilter(
 			@RequestParam(name = "categoriesId", defaultValue = "0") String categoryId,
 			@RequestParam(name = "name", defaultValue = "") String name, Pageable pageable) {
 		return ResponseEntity.ok(service.findAllPaged(categoryId, name, pageable));

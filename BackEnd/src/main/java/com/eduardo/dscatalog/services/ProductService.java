@@ -21,6 +21,7 @@ import com.eduardo.dscatalog.repositories.CategoryRepository;
 import com.eduardo.dscatalog.repositories.ProductRepository;
 import com.eduardo.dscatalog.services.exceptions.DatabaseException;
 import com.eduardo.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.eduardo.dscatalog.utils.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -48,11 +49,10 @@ public class ProductService {
 
 		Page<ProductProjection> page = repository.searchProducts(categoryIds, name, paegeable);
 		List<Long> productIds = page.map(x -> x.getId()).toList();
-		Page<ProductDTO> pageDto = new PageImpl<>(
-				repository.searchProductsWithCategories(productIds).stream()
-						.map(x -> new ProductDTO(x, x.getCategories())).toList(),
+		List<Product> entities = repository.searchProductsWithCategories(productIds);
+		entities = Utils.replace(page.getContent(), entities);
+		return new PageImpl<>(entities.stream().map(x -> new ProductDTO(x, x.getCategories())).toList(),
 				page.getPageable(), page.getTotalElements());
-		return pageDto;
 	}
 
 	@Transactional(readOnly = true)
